@@ -2,12 +2,15 @@ from typing import Any, Callable
 
 
 class DoubleLinkedList:
+    """Double linked list
+    """
     class Node:
+        """Node of the list
+        """
         def __init__(self, previous_node = None, next_node = None, value: Any = None) -> None:
             self.previous_node = previous_node
             self.next_node = next_node
             self.value = value
-
 
     def __init__(self):
         self.__first = None
@@ -15,14 +18,24 @@ class DoubleLinkedList:
         self.__next = None
 
     def push_back(self, value: Any) -> None:
+        """Paste element in the end
+
+        Args:
+            value (Any): Element to paste
+        """
         if self.__last is None:
             self.__create_first_node(value)
         else:
-            tmp = self.Node(self.__last, None, value)        
+            tmp = self.Node(self.__last, None, value)
             self.__last.next_node = tmp
             self.__last = tmp
 
     def pop_back(self) -> None:
+        """Delete last element
+
+        Raises:
+            AttributeError: if there aren't any element
+        """
         if self.__last is None:
             raise AttributeError()
         if self.__last.previous_node is None:
@@ -36,6 +49,11 @@ class DoubleLinkedList:
         
 
     def push_front(self, value: Any) -> None:
+        """Paste element in the front
+
+        Args:
+            value (Any): Element to paste
+        """
         if self.__first is None:
             self.__create_first_node(value)
         else:
@@ -44,6 +62,11 @@ class DoubleLinkedList:
             self.__first = tmp
 
     def pop_front(self) -> None:
+        """Delete first element
+
+        Raises:
+            AttributeError: if there aren't any element
+        """
         if self.__first is None:
             raise AttributeError()
         if self.__first.next_node is None:
@@ -56,13 +79,28 @@ class DoubleLinkedList:
             self.__first = tmp
 
     def insert(self, element: Any, pos: int) -> None:
+        """Inserts element at the position
+
+        Args:
+            element (Any): to paste
+            pos (int): where to paste
+        """
         before = self.__count(pos)
         to_paste = self.Node(before.previous_node, before, element)
         before.previous_node = to_paste
         if to_paste.previous_node is not None:
             to_paste.previous_node.next_node = to_paste
-    
+        else:
+            self.__first = to_paste
+        if to_paste.next_node is None:
+            self.__last = to_paste
+
     def sort(self, key: Callable[[Any, Any], Any]) -> None:
+        """Sort the list using key
+
+        Args:
+            key (Callable[[Any, Any], Any]): returns lesser
+        """
         now = self.__first
         while now is not None:
             least_candidate = now.next_node
@@ -74,16 +112,23 @@ class DoubleLinkedList:
                 least_candidate = least_candidate.next_node
             now.value, least.value = least.value, now.value
             now = now.next_node
-                
 
-    def __getitem__(self, a: int) -> Any:
-        return self.__count(a).value
+    def __getitem__(self, pos: int) -> Any:
+        """Return certain element
+
+        Args:
+            pos (int): position of the element
+
+        Returns:
+            Any: the element
+        """
+        return self.__count(pos).value
 
     def __create_first_node(self, value: Any) -> None:
         tmp = self.Node(None, None, value)
         self.__first = tmp
         self.__last = tmp
-        
+
     def __count(self, index: int) -> Node:
         out = self.__first
         for _ in range(index):
